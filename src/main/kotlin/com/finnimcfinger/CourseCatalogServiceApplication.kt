@@ -1,4 +1,4 @@
-package com.finnnimcfinger
+package com.finnimcfinger
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

@@ -1,6 +1,6 @@
-package com.finnnimcfinger.controller
+package com.finnimcfinger.controller
 
-import com.finnnimcfinger.service.GreetingService
+import com.finnimcfinger.service.GreetingService
 import mu.KLogging
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
