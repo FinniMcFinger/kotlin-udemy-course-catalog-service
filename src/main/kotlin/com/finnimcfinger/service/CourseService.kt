@@ -2,6 +2,7 @@ package com.finnimcfinger.service
 
 import com.finnimcfinger.dto.CourseDTO
 import com.finnimcfinger.entity.Course
+import com.finnimcfinger.exception.NoSuchElementException
 import com.finnimcfinger.repository.CourseRepository
 import mu.KLogging
 import org.springframework.stereotype.Service
@@ -25,5 +26,22 @@ class CourseService(val courseRepository: CourseRepository) {
 
     fun getAllCourses(): List<CourseDTO> {
         return courseRepository.findAll().map { CourseDTO(it.id, it.name, it.category) }
+    }
+
+    fun updateCourse(courseId: Int, courseDTO: CourseDTO): CourseDTO {
+        val existing = courseRepository.findById(courseId)
+
+        return if (existing.isPresent) {
+            logger.info { "course with id: $courseId being updated" }
+
+            existing.get().let {
+                it.name = courseDTO.name
+                it.category = courseDTO.category
+                courseRepository.save(it)
+                CourseDTO(it.id, it.name, it.category)
+            }
+        } else {
+            throw NoSuchElementException("course $courseId not found")
+        }
     }
 }

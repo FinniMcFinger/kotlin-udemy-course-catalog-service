@@ -3,13 +3,13 @@ package com.finnimcfinger.controller
 import com.finnimcfinger.dto.CourseDTO
 import com.finnimcfinger.entity.Course
 import com.finnimcfinger.repository.CourseRepository
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.HttpStatus
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 
@@ -17,6 +17,7 @@ import org.springframework.test.web.reactive.server.WebTestClient
 @ActiveProfiles("test")
 @AutoConfigureWebTestClient
 class CourseControllerIntegrationTest {
+    private var savedCourses: MutableList<Course> = mutableListOf();
 
     @Autowired
     lateinit var webTestClient: WebTestClient
@@ -26,7 +27,10 @@ class CourseControllerIntegrationTest {
     @BeforeEach
     fun setUp() {
         courseRepository.deleteAll()
-        courseRepository.saveAll(getTestCourses())
+        savedCourses = mutableListOf()
+        getTestCourses().forEach {
+            savedCourses.add(courseRepository.save(it))
+        }
     }
 
     fun getTestCourses(): List<Course> = listOf(
@@ -47,7 +51,7 @@ class CourseControllerIntegrationTest {
             .returnResult()
             .responseBody
 
-        Assertions.assertNotNull(created!!.id)
+        assertNotNull(created!!.id)
     }
 
     @Test
@@ -62,9 +66,28 @@ class CourseControllerIntegrationTest {
             .responseBody
 
         returned!!.forEachIndexed { index, item ->
-            Assertions.assertEquals(getTestCourses()[index].name, item!!.name)
-            Assertions.assertEquals(getTestCourses()[index].category, item.category)
-            Assertions.assertNotNull(item.id)
+            assertEquals(getTestCourses()[index].name, item!!.name)
+            assertEquals(getTestCourses()[index].category, item.category)
+            assertNotNull(item.id)
         }
+    }
+
+    @Test
+    fun updateCourse() {
+        val original = savedCourses[0]
+        val updates = CourseDTO(null, "Updated Course", original.category)
+        val returned = webTestClient
+            .put()
+            .uri("/courses/${original.id}")
+            .bodyValue(updates)
+            .exchange()
+            .expectStatus().isAccepted
+            .expectBody(CourseDTO::class.java)
+            .returnResult()
+            .responseBody
+
+        assertNotNull(returned!!.id)
+        assertEquals("Updated Course", returned.name)
+        assertEquals(original.category, returned.category)
     }
 }
