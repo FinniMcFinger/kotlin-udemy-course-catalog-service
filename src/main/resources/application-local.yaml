@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:course_catalog
+    url: jdbc:h2:file:./build/h2/db/course-catalog;AUTO_SERVER=TRUE
     driver-class-name: org.h2.Driver
     username: sa
     password: some-password

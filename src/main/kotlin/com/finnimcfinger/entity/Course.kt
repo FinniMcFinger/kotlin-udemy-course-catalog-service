@@ -8,7 +8,7 @@ import jakarta.persistence.Table
 
 @Entity
 @Table(name = "course")
-data class CourseEntity(
+data class Course(
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     val id: Int?,
     val name: String,

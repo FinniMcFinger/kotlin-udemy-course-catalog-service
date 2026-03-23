@@ -1,7 +1,7 @@
 package com.finnimcfinger.repository
 
-import com.finnimcfinger.entity.CourseEntity
+import com.finnimcfinger.entity.Course
 import org.springframework.data.repository.CrudRepository
 
-interface CourseRepository: CrudRepository<CourseEntity, Int> {
+interface CourseRepository: CrudRepository<Course, Int> {
 }
