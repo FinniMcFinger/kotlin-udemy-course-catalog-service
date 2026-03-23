@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:course-catalog
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: some-password
+  jpa:
+    database: h2
+    database-platform: org.hibernate.dialect.H2Dialect
+    generate-ddl: true
+    show-sql: true
+  h2:
+    console:
+      enabled: true

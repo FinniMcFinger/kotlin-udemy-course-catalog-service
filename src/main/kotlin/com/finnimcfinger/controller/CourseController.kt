@@ -4,6 +4,7 @@ import com.finnimcfinger.dto.CourseDTO
 import com.finnimcfinger.service.CourseService
 import mu.KLogging
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -21,5 +22,12 @@ class CourseController(val courseService: CourseService) {
         logger.info { "/courses POST" }
 
         return courseService.addCourse(courseDTO)
+    }
+
+    @GetMapping
+    fun getAllCourses(): List<CourseDTO> {
+        logger.info { "/courses GET" }
+
+        return courseService.getAllCourses();
     }
 }
