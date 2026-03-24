@@ -2,7 +2,7 @@ package com.finnimcfinger.service
 
 import com.finnimcfinger.dto.CourseDTO
 import com.finnimcfinger.entity.Course
-import com.finnimcfinger.exception.NoSuchElementException
+import com.finnimcfinger.exception.RecordNotFoundException
 import com.finnimcfinger.repository.CourseRepository
 import mu.KLogging
 import org.springframework.stereotype.Service
@@ -41,7 +41,7 @@ class CourseService(val courseRepository: CourseRepository) {
                 CourseDTO(it.id, it.name, it.category)
             }
         } else {
-            throw NoSuchElementException("course $courseId not found")
+            throw RecordNotFoundException("course $courseId not found")
         }
     }
 
@@ -51,7 +51,7 @@ class CourseService(val courseRepository: CourseRepository) {
         return if (existing.isPresent) {
             courseRepository.deleteById(courseId)
         } else {
-            throw NoSuchElementException("course $courseId not found")
+            throw RecordNotFoundException("course $courseId not found")
         }
     }
 }

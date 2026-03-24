@@ -12,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
-import org.springframework.test.web.reactive.server.expectBody
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -106,6 +105,23 @@ class CourseControllerIntegrationTest {
         assertNotNull(returned!!.id)
         assertEquals("Updated Course", returned.name)
         assertEquals(original.category, returned.category)
+    }
+
+    @Test
+    fun updateCourse_notFound() {
+        val original = savedCourses[0]
+        val updates = CourseDTO(null, "Updated Course", original.category)
+        val returned = webTestClient
+            .put()
+            .uri("/courses/10000")
+            .bodyValue(updates)
+            .exchange()
+            .expectStatus().isNotFound
+            .expectBody(String::class.java)
+            .returnResult()
+            .responseBody
+
+        assertEquals("course 10000 not found", returned!!)
     }
 
     @Test
