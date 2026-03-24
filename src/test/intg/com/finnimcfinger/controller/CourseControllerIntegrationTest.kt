@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.expectBody
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -57,12 +58,17 @@ class CourseControllerIntegrationTest {
     @Test
     fun addCourse_validationError() {
         val dto = CourseDTO(null, "", "")
-        webTestClient
+        val response = webTestClient
             .post()
             .uri("/courses")
             .bodyValue(dto)
             .exchange()
             .expectStatus().isBadRequest
+            .expectBody(String::class.java)
+            .returnResult()
+            .responseBody
+
+        assertEquals("CourseDTO.category must not be blank, CourseDTO.name must not be blank", response)
     }
 
     @Test
