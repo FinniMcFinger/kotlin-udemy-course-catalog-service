@@ -90,4 +90,14 @@ class CourseControllerIntegrationTest {
         assertEquals("Updated Course", returned.name)
         assertEquals(original.category, returned.category)
     }
+
+    @Test
+    fun deleteCourse() {
+        val original = savedCourses[0]
+        webTestClient
+            .delete()
+            .uri("/courses/${original.id}")
+            .exchange()
+            .expectStatus().isNoContent
+    }
 }

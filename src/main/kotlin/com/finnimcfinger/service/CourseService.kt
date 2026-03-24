@@ -44,4 +44,14 @@ class CourseService(val courseRepository: CourseRepository) {
             throw NoSuchElementException("course $courseId not found")
         }
     }
+
+    fun deleteCourse(courseId: Int) {
+        val existing = courseRepository.findById(courseId)
+
+        return if (existing.isPresent) {
+            courseRepository.deleteById(courseId)
+        } else {
+            throw NoSuchElementException("course $courseId not found")
+        }
+    }
 }
