@@ -2,8 +2,10 @@ package com.finnimcfinger.controller
 
 import com.finnimcfinger.dto.CourseDTO
 import com.finnimcfinger.service.CourseService
+import jakarta.validation.Valid
 import mu.KLogging
 import org.springframework.http.HttpStatus
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -16,12 +18,13 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/courses")
+@Validated
 class CourseController(val courseService: CourseService) {
     companion object: KLogging()
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    fun addCourse(@RequestBody courseDTO: CourseDTO): CourseDTO {
+    fun addCourse(@RequestBody @Valid courseDTO: CourseDTO): CourseDTO {
         logger.info { "/courses POST" }
 
         return courseService.addCourse(courseDTO)

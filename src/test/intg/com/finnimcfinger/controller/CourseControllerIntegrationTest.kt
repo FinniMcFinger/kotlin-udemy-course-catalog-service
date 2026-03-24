@@ -55,6 +55,17 @@ class CourseControllerIntegrationTest {
     }
 
     @Test
+    fun addCourse_validationError() {
+        val dto = CourseDTO(null, "", "")
+        webTestClient
+            .post()
+            .uri("/courses")
+            .bodyValue(dto)
+            .exchange()
+            .expectStatus().isBadRequest
+    }
+
+    @Test
     fun getAllCourses() {
         val returned = webTestClient
             .get()
