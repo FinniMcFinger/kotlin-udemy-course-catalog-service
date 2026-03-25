@@ -1,6 +1,7 @@
 package com.finnimcfinger.repository
 
 import com.finnimcfinger.entity.Course
+import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 
 /*
@@ -10,4 +11,7 @@ import org.springframework.data.repository.CrudRepository
 
 interface CourseRepository: CrudRepository<Course, Int> {
     fun findByNameContaining(name: String): List<Course>
+
+    @Query(value = "SELECT * FROM course WHERE name LIKE %?1%", nativeQuery = true)
+    fun findCoursesByName(name: String): List<Course>
 }
