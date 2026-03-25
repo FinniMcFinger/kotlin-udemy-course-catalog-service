@@ -38,9 +38,9 @@ class CourseControllerTest {
 
     @Test
     fun getAllCourses() {
-        every { mockService.getAllCourses() } returns listOf(testCourse, testCourse)
+        every { mockService.getAllCourses(any()) } returns listOf(testCourse, testCourse)
 
-        val results = controller?.getAllCourses()
+        val results = controller?.getAllCourses(null)
 
         assertEquals(2, results!!.size)
     }

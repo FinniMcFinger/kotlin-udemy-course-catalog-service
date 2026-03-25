@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
@@ -31,10 +32,11 @@ class CourseController(val courseService: CourseService) {
     }
 
     @GetMapping
-    fun getAllCourses(): List<CourseDTO> {
-        logger.info { "/courses GET" }
+    fun getAllCourses(@RequestParam(required = false) courseName: String?): List<CourseDTO> {
+        val query = courseName?.let { "?courseName=$it" } ?: ""
+        logger.info { "/courses$query GET" }
 
-        return courseService.getAllCourses();
+        return courseService.getAllCourses(courseName);
     }
 
     @PutMapping("/{courseId}")
