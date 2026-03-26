@@ -2,7 +2,9 @@ package com.finnimcfinger.controller
 
 import com.finnimcfinger.dto.CourseDTO
 import com.finnimcfinger.entity.Course
+import com.finnimcfinger.entity.Instructor
 import com.finnimcfinger.repository.CourseRepository
+import com.finnimcfinger.repository.InstructorRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
@@ -24,6 +26,8 @@ class CourseControllerIntegrationTest {
     lateinit var webTestClient: WebTestClient
     @Autowired
     lateinit var courseRepository: CourseRepository
+    @Autowired
+    lateinit var instructorRepository: InstructorRepository
 
     @BeforeEach
     fun setUp() {
@@ -34,14 +38,20 @@ class CourseControllerIntegrationTest {
         }
     }
 
-    fun getTestCourses(): List<Course> = listOf(
-        Course(null, "Test Course 1", "Integration Tests"),
-        Course(null, "Test Course 2", "Integration Tests"),
-    )
+    fun getTestCourses(): List<Course> {
+        val instructor = Instructor(null, "Mr. Doctor")
+        instructorRepository.save(instructor)
+
+        return listOf(
+            Course(null, "Test Course 1", "Integration Tests", instructor),
+            Course(null, "Test Course 2", "Integration Tests", instructor),
+        )
+    }
 
     @Test
     fun addCourse() {
-        val dto = CourseDTO(null, "INT Test Course", "Integration Tests")
+        val dto = CourseDTO(null, "INT Test Course", "Integration Tests",
+            savedCourses[0].instructor!!.id)
         val created = webTestClient
             .post()
             .uri("/courses")
@@ -57,7 +67,7 @@ class CourseControllerIntegrationTest {
 
     @Test
     fun addCourse_validationError() {
-        val dto = CourseDTO(null, "", "")
+        val dto = CourseDTO(null, "", "", savedCourses[0].instructor!!.id)
         val response = webTestClient
             .post()
             .uri("/courses")
@@ -109,7 +119,7 @@ class CourseControllerIntegrationTest {
     @Test
     fun updateCourse() {
         val original = savedCourses[0]
-        val updates = CourseDTO(null, "Updated Course", original.category)
+        val updates = CourseDTO(null, "Updated Course", original.category, original.instructor!!.id)
         val returned = webTestClient
             .put()
             .uri("/courses/${original.id}")
@@ -128,7 +138,7 @@ class CourseControllerIntegrationTest {
     @Test
     fun updateCourse_notFound() {
         val original = savedCourses[0]
-        val updates = CourseDTO(null, "Updated Course", original.category)
+        val updates = CourseDTO(null, "Updated Course", original.category, original.instructor!!.id)
         val returned = webTestClient
             .put()
             .uri("/courses/10000")

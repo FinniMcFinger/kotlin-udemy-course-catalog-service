@@ -5,6 +5,7 @@ import com.finnimcfinger.entity.Instructor
 import com.finnimcfinger.repository.InstructorRepository
 import mu.KLogging
 import org.springframework.stereotype.Service
+import java.util.Optional
 
 @Service
 class InstructorService(val instructorRepository: InstructorRepository) {
@@ -19,5 +20,9 @@ class InstructorService(val instructorRepository: InstructorRepository) {
         return instructorEntity.let {
             InstructorDTO(it.id, it.name)
         }
+    }
+
+    fun findInstructorById(id: Int): Optional<Instructor?> {
+        return instructorRepository.findById(id)
     }
 }

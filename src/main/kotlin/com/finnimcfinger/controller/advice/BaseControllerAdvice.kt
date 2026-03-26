@@ -1,5 +1,6 @@
 package com.finnimcfinger.controller.advice
 
+import com.finnimcfinger.exception.InstructorNotValidException
 import com.finnimcfinger.exception.RecordNotFoundException
 import mu.KLogging
 import org.springframework.http.HttpHeaders
@@ -38,6 +39,13 @@ class BaseControllerAdvice : ResponseEntityExceptionHandler() {
         log.info("NoSuchElementException observed: ${ex.message}", ex)
 
         return ResponseEntity(ex.message, HttpStatus.NOT_FOUND)
+    }
+
+    @ExceptionHandler(InstructorNotValidException::class)
+    fun handleInstructorNotValidException(ex: InstructorNotValidException, request: WebRequest): ResponseEntity<Any?> {
+        log.info("InstructorNotValidException observed: ${ex.message}", ex)
+
+        return ResponseEntity(ex.message, HttpStatus.BAD_REQUEST)
     }
 
     @ExceptionHandler(Exception::class)

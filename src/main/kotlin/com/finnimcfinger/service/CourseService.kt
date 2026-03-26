@@ -2,25 +2,35 @@ package com.finnimcfinger.service
 
 import com.finnimcfinger.dto.CourseDTO
 import com.finnimcfinger.entity.Course
+import com.finnimcfinger.exception.InstructorNotValidException
 import com.finnimcfinger.exception.RecordNotFoundException
 import com.finnimcfinger.repository.CourseRepository
 import mu.KLogging
 import org.springframework.stereotype.Service
 
 @Service
-class CourseService(val courseRepository: CourseRepository) {
+class CourseService(
+    val courseRepository: CourseRepository,
+    val instructorService: InstructorService
+) {
     companion object: KLogging()
 
     fun addCourse(courseDto: CourseDTO): CourseDTO {
+        val existingInstructor = instructorService.findInstructorById(courseDto.instructorId!!)
+
+        if (!existingInstructor.isPresent) {
+            throw InstructorNotValidException("Instructor ${courseDto.instructorId} is not valid")
+        }
+
         val courseEntity = courseDto.let {
-            Course(null, it.name, it.category)
+            Course(null, it.name, it.category, existingInstructor.get())
         }
 
         courseRepository.save(courseEntity);
         logger.info { "saved course: $courseEntity" }
 
         return courseEntity.let {
-            CourseDTO(it.id, it.name, it.category)
+            CourseDTO(it.id, it.name, it.category, existingInstructor.get().id)
         }
     }
 

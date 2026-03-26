@@ -13,7 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class)
 class CourseControllerTest {
-    private val testCourse = CourseDTO(1, "Test Course", "Unit Tests")
+    private val testCourse = CourseDTO(1, "Test Course", "Unit Tests", 1)
 
     @MockK
     lateinit var mockService: CourseService
