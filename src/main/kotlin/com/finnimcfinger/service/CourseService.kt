@@ -39,7 +39,7 @@ class CourseService(
             courseRepository.findByNameContaining(name)
         } ?: courseRepository.findAll()
 
-        return courses.map { CourseDTO(it.id, it.name, it.category) }
+        return courses.map { CourseDTO(it.id, it.name, it.category, it.instructor!!.id) }
     }
 
     fun updateCourse(courseId: Int, courseDTO: CourseDTO): CourseDTO {
@@ -51,8 +51,9 @@ class CourseService(
             existing.get().let {
                 it.name = courseDTO.name
                 it.category = courseDTO.category
+                it.instructor = existing.get().instructor
                 courseRepository.save(it)
-                CourseDTO(it.id, it.name, it.category)
+                CourseDTO(it.id, it.name, it.category, it.instructor!!.id)
             }
         } else {
             throw RecordNotFoundException("course $courseId not found")
